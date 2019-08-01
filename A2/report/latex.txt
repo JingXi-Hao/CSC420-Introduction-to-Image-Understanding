@@ -1,0 +1,286 @@
+\documentclass{article}
+\usepackage{ccfonts, fullpage, amsmath, graphicx, amssymb, enumerate, graphicx, xfrac, mathtools, tikz, bm, mathtools}
+\usetikzlibrary{automata,positioning}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\newcommand*{\Line}[3][]{\tikz \draw[#1] #2 -- #3;}%
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\usepackage[usenames, dvipsnames]{color}
+\graphicspath{{image/}}
+\usepackage{hyperref}
+\usepackage{dsfont, amssymb}
+\title{\textbf{CSC420H1 L0101, Fall 2018\\
+Assignment 2}}
+\author{Name: JingXi, Hao\\
+Student Number: 1000654188}
+\date{Due Date: 12 October, 2018 11:59pm}
+\renewcommand{\today}{~}
+\hypersetup{pdfpagemode=Fullscreen,
+  colorlinks=true,
+  linkfileprefix={}}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+    \item \textbf{Interest Point Detection}
+    
+    \begin{enumerate}
+        \item Write two functions for computing the Harris corner metric using Harris (R) and Brown (harmonic mean) methods. Display your results for the attached image \textbf{building.jpg} showing your cornerness metric output. Compare the results corresponding to two different methods. For Harris you can use the code provided in Tutorial C.
+        
+        \vspace{1\baselineskip}
+        
+        \textbf{\em Solution:}
+        
+        Please see the code implementation for this question, which can be found in the file, \textbf{\em a2.py}. Based on my code, the output images obtained by computing the Harris corner metric, using Harris and Brown methods are shown below.
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.25]{harris.jpg}
+            \caption{Result Obtained From Harris Method}
+            \label{fig:1}
+            
+            \includegraphics[scale=0.25]{brown.jpg}
+            \caption{Result Obtained From Brown Method}
+            \label{fig:2}
+        \end{figure*}
+        
+        Based on the result images shown above, we are able to see that Brown method ({\em Figure 2}) shows more clear corner points than Harris method ({\em Figure 1}) does, which implies that Brown method works better to reduce the noise and find the corner points.
+        
+        \vspace{2\baselineskip}
+        
+        \item Write your own function to perform non-maximal suppression using your own functions of choice. Use a circular element, and experiment with varying radii $r$ as a parameter for the output of harmonic mean method. Explain why/how the results change with $r$. MATLAB users may want to use functions \textbf{\em ordfilt2()} , however it can be easily implemented.
+        
+        \vspace{1\baselineskip}
+        
+        \textbf{\em Solution:}
+        
+        Please see the code implementation for this question, which can be found in the file, \textbf{\em a2.py}. The output images for using distinct choice of $r$ are shown below.
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.21]{brown_nms1.jpg}
+            \caption{Result Obtained With $r = 1$}
+            \label{fig:3}
+        \end{figure*}
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.21]{brown_nms3.jpg}
+            \caption{Result Obtained With $r = 3$}
+            \label{fig:4}
+        \end{figure*}
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.21]{brown_nms5.jpg}
+            \caption{Result Obtained With $r = 5$}
+            \label{fig:5}
+        \end{figure*}
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.21]{brown_nms9.jpg}
+            \caption{Result Obtained With $r = 9$}
+            \label{fig:6}
+        \end{figure*}
+        
+        Based on the output images shown above, we can conclude that the number of interest points decreases when the value for $r$ increases. Since patch size increases with the increasing of $r$, thus the probability for the intensity of each pixel to become the local maxima would reduce. Therefore, by increasing the magnitude of $r$, we gonna end with selecting less number of local maxima, which indicates that we obtain less number of interest points.
+        
+        \vspace{2\baselineskip}
+        
+        \item Write code to search the image for scale-invariant interest point (i.e. blob) detection using the Laplacian of Gaussian and checking a pixel’s local neighbourhood as in SIFT. You must find extrema in both location and scale. Find the appropriate parameter settings, and display your keypoints for \textbf{synthetic.png} using harmonic mean metric . {\em Hint: Only investigate pixels with LoG above or below a threshold.}
+        
+        \vspace{1\baselineskip}
+        
+        \textbf{\em Solution:}
+        
+        Please see the code implementation for this question, which can be found in the file, \textbf{\em a2.py}. The output image, showing keypoints for \textbf{synthetic.png} by applying scale-invariant interest point detection, is displayed below.
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.3]{si_kp_detection.jpg}
+            \caption{Result Obtained From Applying Scale-Invariant Interest Point Detection}
+            \label{fig:7}
+        \end{figure*}
+        
+        \vspace{2\baselineskip}
+        
+        \item Use open-source implementation of another local feature descriptor that is not covered in the class, and show the output keypoints on \textbf{synthetic.png} and \textbf{building.jpg}. Describe the main ideas of your algorithm of choice in a few sentences. You may want to look at Slide 7 in Lecture \textbf{8-A} for a list of existing methods.
+        
+        \vspace{1\baselineskip}
+        
+        \textbf{\em Solution:}
+        
+        Please see the code implementation for this question, which can be found in the file, \textbf{\em a2.py}. Based on my code, the output images are shown below by applying $FAST$ local feature descriptor to both \textbf{synthetic.png} and \textbf{building.png}.
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.32]{fast_building.jpg}
+            \caption{Result Obtained From Applying $FAST$ on \textbf{building.jpg}}
+            \label{fig:8}
+        \end{figure*}
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.4]{fast_sythetic.jpg}
+            \caption{Result Obtained From Applying $FAST$ on \textbf{synthetic.png}}
+            \label{fig:9}
+        \end{figure*}
+        
+        The reason for choosing $FAST$ corner detection algorithm is due to its computational efficiency. This algorithm first picks a pixel in the image which is to be identified as an interest point or not. Then defines a appropriate threshold value. Based on the threshold defined, the method would execute a high-speed test, which only tests 4 pixels in a circle (patch) where the center is the pixel we currently detect in order to determine whether the pixel chosen is a corner point. Therefore, this algorithm is able to produce faster detection process for finding corner points.
+        
+        \vspace{2\baselineskip}
+        
+    \end{enumerate}
+    
+    \item \textbf{SIFT Matching} (For this question you will use interest point detection for matching using SIFT. You may use a SIFT implementation (e.g. http://www.vlfeat.org/), or another, but specify what you use)
+    
+    \begin{enumerate}
+        \item Extract SIFT keypoints and features for \textbf{book.jpg} and \textbf{findBook.jpg}.
+        
+        \vspace{1\baselineskip}
+        
+        \textbf{\em Solution:}
+        
+        Please see the code implementation for this question, which can be found in the file, \textbf{\em a2.py}.
+        
+        \vspace{2\baselineskip}
+        
+        \item Write your own matching algorithm to establish feature correspondence between the two images using the reliability ratio on Lecture 8 . You can use any function for computing the distance, but you must find the matches yourself. Plot the percentage of true matches as a function of threshold. Also, after experimenting with different thresholds, report the best value.
+        
+        \vspace{1\baselineskip}
+        
+        \textbf{\em Solution:}
+        
+        Please see the code implementation for this question, which can be found in the file, \textbf{\em a2.py}. Based on my code, the output plot showing the number of matches as a function of threshold is displayed below.
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.6]{2b.png}
+            \caption{Plot For Number of Matches vs. Thresholds}
+            \label{fig:10}
+        \end{figure*}
+        
+        After experimenting with various values of thresholds (let thresholds be $0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7,$
+        $0.8, 0.9$), the plot for the function of number of matches in terms of threshold is shown as above. Based on experiment results, the best value for threshold seems to be $0.6$ for my case. 
+        
+        \vspace{2\baselineskip}
+        
+        \item Use the top k correspondences from part $(b)$ to solve for the affine transformation between the features in the two images via least squares using the Moore-Penrose pseudo inverse. What is the minimum $k$ required for solving the transformation? Demonstrate your results for various $k$ . Use only basic linear algebra libraries.
+        
+        \vspace{1\baselineskip}
+        
+        \textbf{\em Solution:}
+        
+        Please see the code implementation for this question, which can be found in the file, \textbf{\em a2.py}. I have tried with $k = 3,5,7,10$ to solve for the affine transformation between the features in the two images via least squares using the Moore-Penrose pseudo inverse. Then, the results for affine matrices are shown below with $k$ equals to $3$, $5$, $7$, and $10$ respectively.
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.6]{2c.png}
+            \caption{Results Obtained From Solving For Affine Transformation With $k = 3,5,7,10$}
+            \label{fig:11}
+        \end{figure*}
+        
+        The minimum $k$ required for solving the affine transformation should be $3$. Since the formula for computing affine transformation, $\textbf{a}$, is 
+        
+        
+        \hspace{50mm} \includegraphics[scale=0.3]{formula.png}
+        
+        
+        , therefore, we need to compute 6 unknowns in order to find the affine transformation. Thus, we need to have at least 6 equations for solving 6 unknowns, which implies that at least 6 rows should be in the matrix $P$. Since for each match, we have 2 more equations. Hence, we need at least 3 matches, which indicates that the minimum $k$ required should be 3.
+        
+        \vspace{2\baselineskip}
+        
+        \item Visualize the affine transformation. Do this visualization by taking the four corners of the reference image, transforming them via the computed affine transformation to the points in the second image, and plotting those transformed points. Please also plot the edges between the points to indicate the parallelogram. If you are unsure what the instruction is, please look at Figure 12 of [Lowe, 2004].
+        
+        \vspace{1\baselineskip}
+        
+        \textbf{\em Solution:}
+        
+        Please see the code implementation for this question, which can be found in the file, \textbf{\em a2.py}. After applying affine transformation, the output plot for the transformed points of four corners of the reference image, including parallelogram formed by connecting edges between points, is shown below.
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.3]{2d.jpg}
+            \caption{Result Parallelogram Formed by 4 Transformed Corner Points Marked In Blue}
+            \label{fig:11}
+        \end{figure*}
+        
+        \vspace{2\baselineskip}
+        
+        \item Write code to perform matching that takes the colour in the images into account during SIFT feature calculation and matching. Explain the rationale behind your approach. Use \textbf{colourTemplate.png} and \textbf{colourSearch.png}, display your matches with the approach described in part $(d)$.
+        
+        \vspace{1\baselineskip}
+        
+        \textbf{\em Solution:}
+        
+        Please see the code implementation for this question, which can be found in the file, \textbf{\em a2.py}. The output image displaying the matches between \textbf{colourTemplate.png} and \textbf{colourSearch.png} with the approach described in part $(d)$ are shown below.
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.2]{2e.jpg}
+            \caption{Match Results Between \textbf{colourTemplate.png} And \textbf{colourSearch.png}}
+            \label{fig:11}
+        \end{figure*}
+        
+        Based on the image shown above, the match results between \textbf{colourTemplate.png} and \textbf{colourSearch.png} are marked in yellow. For this approach, we first employ $SIFT$ to compute keypoints and descriptors for both images. Then, we use the descriptors obtained from applying $SIFT$ to match the features for two images. In this case, we need to take color into consideration, therefore, we not only need to compare the computed value with the threshold but also need to check whether the color for the pixels are matched (should ensure all RGB values are same). If both these conditions are met, then we are able to conclude that we find a match between two images. After finding all matches, we compute the affine transformation matrix based on the matches found between two images. Then, we are able to do transformation for each corner points in \textbf{colourTemplate.png} and marked it in \textbf{colourSearch.png} with paralellogram to show the matches.
+        
+        \vspace{2\baselineskip}
+        
+    \end{enumerate}
+    
+    \item \textbf{RANSAC}
+    
+    \begin{enumerate}
+        \item Assuming a fixed percentage of inliers $p = 0.7$ , plot the required number of RANSAC iterations ($S$) to recover the correct model with a higher than 99\% chance ($P$), as a function of $k$ (1:20), the minimum number of sample points used to form a hypothesis.
+    
+        \vspace{1\baselineskip}
+            
+        \textbf{\em Solution:}
+        
+        Please see the code implementation for this question, which can be found in the file, \textbf{\em a2.py}. Also, the plot for the required number of iterations, $S$, as a function of $k$ is shown on the next page.
+        
+        \begin{figure*}[h]
+            \centering
+            \includegraphics[scale=0.5]{3a.png}
+            \caption{Plot For S vs. k}
+            \label{fig:15}
+        \end{figure*}
+
+        \vspace{2\baselineskip}
+        
+        \newpage
+        
+        \item Assuming a fixed number of sample points required ( $k = 5$ ), plot $S$ as a function of the percentage of inliers $p$ (0.1 : 0.5)
+        
+        \vspace{1\baselineskip}
+            
+        \textbf{\em Solution:}
+        
+        Please see the code implementation for this question, which can be found in the file, \textbf{\em a2.py}. Also, the plot for the required number of iterations, $S$, as a function of the percentage of inliers $p$ is shown below.
+        
+        \begin{figure*}[h!]
+            \centering
+            \includegraphics[scale=0.5]{3b.png}
+            \caption{Plot For S vs. p}
+            \label{fig:15}
+        \end{figure*}
+
+        \vspace{2\baselineskip}
+        
+        \item If $k = 5$ and the initial estimate on the percentage of inliers is $p = 0.2$ , what is the the required number of iterations to recover the correct model with $P \geq 0.99$ chance? Assume that you have implemented this and there are 1500 matches in total. In iteration \#15, 450 points agree with the current hypothesis (i.e. their error is within a preselected threshold), would the number of required iterations change? explain how and why.
+        
+        \vspace{1\baselineskip}
+            
+        \textbf{\em Solution:}
+        
+        When $k = 5$ and the initial estimate on the percentage of inliers is $p = 0.2$, so, based on the formula, we are able to compute the required number of iterations to recover the correct model with $P \geq 0.99$, which is $S = \frac{log(1 - P)}{log(1 - p^k)}= \frac{log(1 - 0.99)}{log(1 - (0.2)^5)} \approx 14389$ iterations. In addition, in iteration \#15, given that there are 450 points agree with the current hypothesis, then we can compute the $p = \frac{450}{1500} = 0.3$. Then, based on the formula, we have that $S = \frac{log(1 - P)}{log(1 - p^k)}= \frac{log(1 - 0.99)}{log(1 - (0.3)^5)} = 1893$ iterations. Thus, we are able to see that the number of required iterations change. The number of requited iterations should change, shown from $Figure \ 12$, we are able to see that $S$ decreases when $p$ value change from $0.2$ to $0.3$ with $k = 5$.
+        
+        
+    
+    \end{enumerate}
+    
+\end{enumerate}
+
+\end{document}
