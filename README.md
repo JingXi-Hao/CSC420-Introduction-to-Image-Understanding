@@ -1,1 +1,2 @@
-# CSC420-Introduction-to-Image-Understanding
+# CSC420 - Introduction to Image Understanding
+Introduction to basic concepts in computer vision. Extraction of image features at multiple scales. Robust estimation of model parameters. Multiview geometry and reconstruction. Image motion estimation and tracking. Object recognition.

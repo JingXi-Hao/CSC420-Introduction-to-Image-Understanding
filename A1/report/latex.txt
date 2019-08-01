@@ -1,0 +1,268 @@
+\documentclass{article}
+\usepackage{ccfonts, fullpage, amsmath, graphicx, amssymb, enumerate, graphicx, xfrac, mathtools, tikz, bm, mathtools}
+\usetikzlibrary{automata,positioning}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\newcommand*{\Line}[3][]{\tikz \draw[#1] #2 -- #3;}%
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+\usepackage[usenames, dvipsnames]{color}
+\graphicspath{{image/}}
+\usepackage{hyperref}
+\usepackage{dsfont, amssymb}
+\title{\textbf{CSC420H1, Fall 2018\\
+Assignment 1}}
+\author{Name: JingXi, Hao\\
+Student Number: 1000654188}
+\date{Due Date: 26 March, 2018 10:59pm}
+\renewcommand{\today}{~}
+\hypersetup{pdfpagemode=Fullscreen,
+  colorlinks=true,
+  linkfileprefix={}}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+    \item Write you own function that implements the correlation (for grayscale or color images and 2D filters) between an input image and a given correlation filter. The function must take as input: an input image 'I', a filter 'f', and a string 'mode', that can either be 'valid', 'same', or 'full'. The output must match what is specified by 'mode'.
+    
+    \vspace{1\baselineskip}
+        
+    \textbf{\em Solution:}
+    
+    For this question, the screenshots for code are shown below. Also, the code snippets for this question are able to be found in the file, {\em a1.py}.
+    
+    \vspace{1\baselineskip}
+    
+    \includegraphics[width = 150mm, height = 114mm]{q1(1)}
+    
+    \includegraphics[width = 152mm, height = 150mm]{q1(2)}
+    
+    \includegraphics[width = 152mm, height = 50mm]{q1(3)}
+    
+    \vspace{1\baselineskip}
+    
+    As you can see above, the function {\em computeCorrelation(I, f, mode)} takes an image, a filter, and a mode as parameters and returns a result image. In main function, I try with an example which use {\em iris.jpg} as input image, a 5 by 5 filter with all zeros except one in the center, and a string {\em $"full"$} as mode. Then, save the output as {\em result1.jpg} by using {\em imwrite} from OpenCV.
+    
+    \vspace{2\baselineskip}
+    
+    \item How would you use your function from part A to calculate the convolution between a filter and an image? Use your function from question 1 to convolution iris.jpg with a Gaussian filter $\sigma_{x} = 3$, $\sigma_{y} = 5$, use 'mode' = 'same'.
+    
+    \vspace{1\baselineskip}
+    
+    \textbf{\em Solution:}
+    
+    For this question, we first build a 2D Gaussian filter by applying dot product on two 1D Gaussian filter each with $\sigma_{x} = 3$ and $\sigma_{y} = 5$ since Gaussian filter is separable. Then, we flip the 2D Gaussian filter mentioned above twice (flip bottom to top first, then flip right to left) to get a flipped filter. Then, we pass this flipped filter as input filter into the function from part A to compute the convolution. The code snippets are able to be found in {\em a1.py}. The output by taking {\em iris.jpg} as input image, flipped filter with dimension 29 by 29 as input filter, and 'same' as mode is shown below.
+    
+    \vspace{1\baselineskip}
+    
+    \includegraphics[width = 150mm, height = 114mm]{result2}
+    
+    \vspace{2\baselineskip}
+    
+    \item Is convolution a commutative operation $(f * g \ ?= g * f)$? Is correlation a commutative operation? Briefly Explain.
+    
+    \vspace{1\baselineskip}
+    
+    \textbf{\em Solution:}
+    
+    Firstly, convolution is a commutative operation, which means that $f * g = g * f$. Let f be the filter and g be the image. We give the proof below.
+    
+    $G(i,j) = (f * g) (i,j)$
+    
+    \hspace{10mm} $ = \sum_{u=-\infty}^{\infty} \sum_{v=-\infty}^{\infty} f(u,v) \cdot g(i-u,j-v)$
+    
+    \hspace{10mm} $ = \sum_{n=-\infty}^{\infty} \sum_{m=-\infty}^{\infty} f(i-n,j-m) \cdot g(n,m)$ {\scriptsize \# let n = i-u and m = j-v \par}
+    
+    \hspace{10mm} $ = ( g * f)(i,j)$
+    
+    Thus, we have that $f * g = g * f$, which means that convolution is commutative.
+    
+    Secondly, correlation is not a commutative operation and we produce a counter-example here. Let $A$ and $B$ be expressed as two 3 by 3 matrices, where
+    
+    \[
+    A = \begin{bmatrix}
+    1 & 2 & 3 \\
+    4 & 5 & 6 \\
+    7 & 8 & 9
+    \end{bmatrix}
+    ,
+    B = \begin{bmatrix}
+    4 & 8 & 9 \\
+    1 & 5 & 6 \\
+    3 & 2 & 0
+    \end{bmatrix}
+    \]
+    
+    Then, we treat $A$ as filter and $B$ as image and pass these as parameters with mode = 'same' to function in question 1, we obtain that 
+    
+    \[
+    A \otimes B = \begin{bmatrix}
+    121 & 211 & 160 \\
+    109 & 149 & 90 \\
+    44 & 51 & 25
+    \end{bmatrix}
+    \].
+    
+    Then, we treat $A$ as image and $B$ as filter and pass these as parameters with mode = 'same' to function in question 1, we obtain that 
+    
+    \[
+    B \otimes A = \begin{bmatrix}
+    25 & 51 & 44 \\
+    90 & 149 & 109 \\
+    160 & 211 & 121
+    \end{bmatrix}
+    \].
+    
+    Hence, as shown above, $A \otimes B \neq B \otimes A$.
+    
+    \vspace{2\baselineskip}
+    
+    \item Is the horizontal derivative, $\partial G(x,y) / \partial x$, of a Gaussian filter G a separable filter? Explain.
+    
+    \vspace{1\baselineskip}
+    
+    \textbf{\em Solution:}
+    
+    First, we compute the horizontal derivative, $\partial G(x,y) / \partial x$, of a Gaussian filter G. Since $G(x,y) = \frac{1}{2 \pi \sigma^2}e^{- \frac{x^2 + y^2}{\sigma^2}}$, therefore we have that
+    
+    $\frac{\partial G(x,y)}{\partial x} = (\frac{1}{2 \pi \sigma^2}e^{- \frac{x^2 + y^2}{\sigma^2}})(\frac{-2x}{\sigma^2})$
+    
+    \hspace{11mm} $ = \frac{-2x}{2 \pi \sigma^4}e^{- \frac{x^2 + y^2}{\sigma^2}}$
+    
+    \hspace{11mm} $ = \frac{-x}{\pi \sigma^4}e^{- \frac{x^2 + y^2}{\sigma^2}}$
+    
+    \hspace{11mm} $ = (x e^{\frac{-x^2}{\sigma^2}})(\frac{-1}{\pi \sigma^4})(e^{\frac{-y^2}{\sigma^2}})$
+    
+    As shown above, $\partial G(x,y) / \partial x$ can be expressed as a multiplication of three terms, which are $x e^{\frac{-x^2}{\sigma^2}}$, $\frac{-1}{\pi \sigma^4}$, and $e^{\frac{-y^2}{\sigma^2}}$. Therefore, the horizontal derivative, $\partial G(x,y) / \partial x$, follows the singular value decomposition, where $x e^{\frac{-x^2}{\sigma^2}}$ refers to each $u_{i}$, $e^{\frac{-y^2}{\sigma^2}}$ refers to each $v_i$, and $\frac{-1}{\pi \sigma^4}$ refers to $\sigma_{i}$ which is the only one non-zero singular value in $\Sigma$. Therefore, the horizontal derivative, $\partial G(x,y) / \partial x$, of a Gaussian filter G is a separable filter.
+    
+    \vspace{2\baselineskip}
+    
+    \item Given a $n \times n$ image, $I$, and $m \times m$ filter, $h$, what is the computational cost of computing $h \cdot I$ if h is not separable? What is the computational cost if $h$ is separable?
+    
+    \vspace{1\baselineskip}
+    
+    \textbf{\em Solution:}
+    
+    Firstly, if $h$ is not separable, then it requires $m^2$ operations per pixel to perform a convolution. Since we have $n^2$ pixels in this case, therefore the computational cost of computing $h \cdot I$ if $h$ is not separable is $O(n^2 m^2)$.
+    
+    \vspace{1\baselineskip}
+    
+    Secondly, if $h$ is separable, then it requires $2m$ operations per pixel to perform a convolution since we can first perform a 1D horizontal convolution followed by a 1D vertical convolution. Since we have $n^2$ pixels in total, thus the computation cost if $h$ is separable is $O((n^2)(2m)) = O(mn^2)$.
+    
+    \vspace{2\baselineskip}
+    
+    \item Construct two different separable filters, such that when added, the result is a separable filter.
+    
+    \vspace{1\baselineskip}
+    
+    \textbf{\em Solution:}
+    
+    Let the two different separable filters be
+    
+    \[
+    f_1 = \begin{bmatrix}
+    1 & 1 & 1 \\
+    1 & 1 & 1 \\
+    1 & 1 & 1
+    \end{bmatrix}
+    ,
+    f_2 = \begin{bmatrix}
+    3 & 3 & 3 \\
+    3 & 3 & 3 \\
+    3 & 3 & 3
+    \end{bmatrix}
+    \]
+    , where $f_1$ is the outer product of $[1,1,1]$ and $[1,1,1]^T$ and $f_2$ is the outer product of $[1,1,1]$ and $[3,3,3]^T$.
+    Then, we add this two separable filters together, we get that
+    
+    \[
+    f = f_1 + f_2 = \begin{bmatrix}
+    4 & 4 & 4 \\
+    4 & 4 & 4 \\
+    4 & 4 & 4
+    \end{bmatrix}
+    \]
+    
+    . Hence, the output filter, $f$, obtained from $f_1 + f_2$ is a separable filter as well since is can be written as a outer product of $[2,2,2]$ and $[2,2,2]^T$.
+    
+    \vspace{2\baselineskip}
+    
+    \item Apply the derivative of Gaussian filter and Laplacian of Gaussian filter to portrait.jpg, show your results.
+    
+    \vspace{1\baselineskip}
+    
+    \textbf{\em Solution:}
+    The code snippets for this question can be found in $a1.py$. First, we show the output for applying the derivative of Gaussian filter with sigma equals to 3 to portrait.jpg below.
+    
+    \includegraphics[scale = 0.55]{result7_derivative.jpg}
+    
+    \vspace{1\baselineskip}
+    
+    Then, we show the output for applying the Laplacian of Gaussian filter with sigma equals to 3 to portrait.jpg below.
+    
+    \includegraphics[scale = 0.55]{result7_lap.jpg}
+    
+    \vspace{2\baselineskip}
+    
+    \item Detect waldo.jpg in whereswaldo.jpg using correlation (use built-in methods). Your output should show whereswaldo.jpg with a rectangle around waldo.
+    
+    \vspace{1\baselineskip}
+    
+    \textbf{\em Solution:}
+    
+    For this question, the code snippets are able to be found in $a1.py$. The output, whereswaldo.jpg, with a green rectangle around waldo is shown below.
+    
+    \includegraphics[scale=0.45]{result8.jpg}
+    
+    \vspace{2\baselineskip}
+    
+    \item How does Canny edge detection work? In your explanation, state the purpose of each step.
+    
+    \vspace{1\baselineskip}
+    
+    \textbf{\em Solution:}
+    
+    \begin{itemize}
+        \item The first step is to filter image with the derivative of Gaussian in horizontal and vertical directions. This step is to make the image blur a little bit and get rid of the noise.
+        
+        \item The second step is to find magnitude and orientation of gradient. For this step, the magnitude of the gradient at each pixel is to determine whether this pixel lies on an edge and the large magnitude implies that there is a rapid change in color. The orientation of the gradient indicates how the edge is oriented. So, this step highlights the pixel that is potentially lie on the edge and produce thick edges.
+        
+        \item The third step is to make non-maximum suppression. This step is to determine whether the pixel is maximum, if it is not the maximum, then
+        it is going to be suppressed, which is for thin out the edges. 
+        
+        \item The last step is linking and thresholding and hysteresis. In this step, we define two thresholds, high threshold and low threshold. High threshold is to start edges curves and 
+        low threshold is to continue edges curves. By comparing pixel values with thresholds, we are able to find some weak edges and strong edges. Then, by using edge track by hysteresis, we are able to determine whether weak edges found are real edges.
+    \end{itemize}
+    
+    
+    \vspace{2\baselineskip}
+    
+    \item Briefly explain why the zero crossings of Laplacian of Gaussian can be used to detect edges (Hint: Laplacian is like second derivatives in 2D).
+    
+    \vspace{1\baselineskip}
+    
+    \textbf{\em Solution:}
+    
+    Edges are discontinuities in the intensity, which occur when there is a rapid change in the intensity, so the edge pixels occur at the extremes of the gradient graph. The zero crossings of Laplacian of Gaussain are the intercepts of the zero-valued axis in the graph, representing the change in sign of the function. Since the Laplacian is like second derivatives in 2D, thus the the zero crossings of Laplacian of Gaussian are inflection points where the extremes of gradient graph occur. Also, inflection points are where the function changes concavity, which implies there is a rapid change in intensity. Thus, the zero crossings of Laplacian of Gaussian can be used to detect edges. 
+    
+    \vspace{2\baselineskip}
+    
+    \item Use Canny Edge detection on portrait.jpg, adjust the parameters to get rid of the details from the background.
+    
+    \vspace{1\baselineskip}
+    
+    \textbf{\em Solution:}
+    
+    For this question, the code snippets are shown below.
+    
+    \includegraphics[scale=0.8]{code11.png}
+    
+    \vspace{1\baselineskip}
+    
+    The output for applying Canny Edge detection with parameters 140 and 500 on portrait.jpg is shown on the next page.
+    
+    \includegraphics[scale=0.55]{result11.jpg}
+    
+\end{enumerate}
+
+\end{document}
