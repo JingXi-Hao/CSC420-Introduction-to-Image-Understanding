@@ -1,3 +1,8 @@
+# Reference: https://www.pyimagesearch.com/2018/09/24/opencv-face-recognition/
+# Reference: https://www.pyimagesearch.com/2017/05/22/face-alignment-with-opencv-and-python/
+# Reference: https://www.pyimagesearch.com/2017/04/03/facial-landmarks-dlib-opencv-python/
+# Reference: https://github.com/jrosebr1/imutils/tree/master/imutils/face_utils
+
 import numpy as np
 import cv2
 from collections import OrderedDict

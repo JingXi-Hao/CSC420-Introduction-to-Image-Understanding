@@ -1,3 +1,6 @@
+# Reference: https://www.pyimagesearch.com/2018/09/24/opencv-face-recognition/
+# Reference: https://www.pyimagesearch.com/2018/02/26/face-detection-with-opencv-and-deep-learning
+
 import imutils
 import pickle
 import cv2
